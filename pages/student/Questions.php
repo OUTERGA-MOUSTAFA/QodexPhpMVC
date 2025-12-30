@@ -27,7 +27,7 @@ if (!isset($_POST['hidden'])) {
     }
 
 }
-$questions = new Quiz_Student();
+$questions = new Questions();
 $questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
 ?>
 
