@@ -20,6 +20,20 @@ class Quiz_Student {
         return $result->fetchAll();
     }
 
+    public function getQuizActive($idCategorie){
+        $requtte = "SELECT q.id,
+                            q.titre,
+                            q.description,
+                            c.nom,
+                            COUNT(ques.id) AS Question_count
+                            FROM quiz q 
+                            JOIN categories c ON q.categorie_id = c.id 
+                            LEFT JOIN questions ques ON ques.quiz_id = q.id
+                            WHERE q.categorie_id = ? AND q.is_active = 1 
+                            GROUP BY q.id, q.titre, q.description, c.nom";
+        $stmt = $this->db->query($requtte,[$idCategorie]);
+        // $stmt->execute();
+        return $stmt->fetchAll();
+    }
 
-    
 }

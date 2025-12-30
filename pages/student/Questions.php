@@ -11,21 +11,8 @@
     
 <!-- Quiz Taking Interface -->
     <div id="takeQuiz" class="student-section">
-        <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold mb-2" id="quizTitle">Les Bases de HTML5</h1>
-                        <p class="text-green-100">Question <span id="currentQuestion">1</span> sur <span id="totalQuestions">20</span></p>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm text-green-100 mb-1">Temps restant</div>
-                        <div class="text-3xl font-bold" id="timer"><?= $time_limit ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        
+    hello question
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="bg-white rounded-xl shadow-lg p-8">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6" id="questionText">

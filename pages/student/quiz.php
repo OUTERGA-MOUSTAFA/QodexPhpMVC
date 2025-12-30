@@ -39,11 +39,8 @@ if (!isset($_POST['hidden'])) {
     }
 
 }
-
-// $stmt = $pdo->prepare("SELECT * FROM quiz WHERE categorie_id = ? AND is_active = 1");
-// $stmt->execute([$idCategorie]);
-// $quizzes = $stmt->fetchAll();
-
+$quiz = new Quiz_Student();
+$quizzes = $quiz->getQuizActive(strip_tags($_POST['hidden']));
 
 // تستعملها فـ query
 //echo "Category ID: " . $idCategorie;
@@ -64,40 +61,60 @@ if (!isset($_POST['hidden'])) {
 <body>
     
 <!-- Category Quizzes List -->
+    <br><br>
         <div id="categoryQuizzes" class="student-section">
             <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <a href="dashboard.php" class="text-white hover:text-green-100 mb-4">
                         <i class="fas fa-arrow-left mr-2"></i>Retour aux Dashboard
                     </a>
-                    <h1 class="text-4xl font-bold mb-2" id="categoryTitle">HTML/CSS</h1>
+                    <h1 class="text-4xl font-bold mb-2" id="categoryTitle">
+                        <?php if (empty($quizzes)) {
+                            echo "Aucun Quiz!";
+                        } else {
+                            echo htmlspecialchars($quizzes[0]['nom']);
+                        }?>
+                    </h1>
                     <p class="text-xl text-green-100">Sélectionnez un quiz pour commencer</p>
                 </div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-400">
                 <div id="quizListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Quiz cards will be loaded dynamically -->
-                </div>
-            </div>
-        </div>
+                     <?php foreach($quizzes as $quiz):?>
+    
 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="px-3 py-1 ${quiz.badge} text-xs font-semibold rounded-full">${categoryName}</span>
-                    <span class="text-yellow-500"><i class="fas fa-star"></i> ${quiz.rating}</span>
+       
+                        <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-xxl transition">
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="px-3 py-1 ${quiz.badge} text-xs font-semibold rounded-full"><?= $quiz['nom']?></span>
+                                    <span class="text-yellow-500"><i class="fas fa-star"></i>4.2</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2"><?= $quiz['titre']?></h3>
+                                <p class="text-gray-600 mb-4 text-sm"><?= $quiz['description']?></p>
+                                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                    <span><i class="fas fa-question-circle mr-1"></i><?= $quiz['Question_count']?> questions</span>
+                                    <span><i class="fas fa-clock mr-1"></i>10 min</span>
+                                </div>
+                                <form action="<?php htmlspecialchars('Questions.php')?>" method="post">
+                                    <input type="hidden" name="hidden" value='<?= $quiz['id']?>'>
+                                    <button type='submit' class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                                        <i class="fas fa-play mr-2"></i>Commencer le Quiz
+                                    </button>
+
+                                </form>
+                                
+                            </div>
+                        </div>
+                        <?php endforeach;?>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">${quiz.title}</h3>
-                <p class="text-gray-600 mb-4 text-sm">${quiz.description}</p>
-                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <span><i class="fas fa-question-circle mr-1"></i>${quiz.questions} questions</span>
-                    <span><i class="fas fa-clock mr-1"></i>${quiz.duration} min</span>
-                </div>
-                <button onclick="startQuiz('${quiz.title}')" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                    <i class="fas fa-play mr-2"></i>Commencer le Quiz
-                </button>
             </div>
         </div>
+    
+        
+     </div>
+    
 </body>
 </html>
