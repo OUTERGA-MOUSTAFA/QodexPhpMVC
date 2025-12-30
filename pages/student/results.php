@@ -1,8 +1,4 @@
 
-
-<?php include '../partials/header.php'; ?>
-
-<?php include '../partials/nav_student.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -27,8 +27,8 @@ if (!isset($_POST['hidden'])) {
     }
 
 }
-$quiz = new Quiz_Student();
-$quizzes = $quiz->getQuestion(strip_tags($_POST['hidden']));
+$questions = new Quiz_Student();
+$questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
 ?>
 
 
@@ -95,7 +95,8 @@ $quizzes = $quiz->getQuestion(strip_tags($_POST['hidden']));
                     <button onclick="previousQuestion()" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
                         <i class="fas fa-arrow-left mr-2"></i>Précédent
                     </button>
-                    <button onclick="nextQuestion()" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                    <form action="<?= htmlspecialchars('results.php')?>" method="post"></form>
+                    <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
                         Suivant<i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
