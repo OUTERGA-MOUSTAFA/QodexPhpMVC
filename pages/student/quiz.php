@@ -89,13 +89,13 @@ $quizzes = $quiz->getQuizActive(strip_tags($_POST['hidden']));
                         <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-xxl transition">
                             <div class="p-6">
                                 <div class="flex items-center justify-between mb-4">
-                                    <span class="px-3 py-1 ${quiz.badge} text-xs font-semibold rounded-full"><?= $quiz['nom']?></span>
+                                    <span class="px-3 py-1 ${quiz.badge} text-xs font-semibold rounded-full"><?= htmlspecialchars($quiz['nom'])?></span>
                                     <span class="text-yellow-500"><i class="fas fa-star"></i>4.2</span>
                                 </div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-2"><?= $quiz['titre']?></h3>
-                                <p class="text-gray-600 mb-4 text-sm"><?= $quiz['description']?></p>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2"><?= htmlspecialchars($quiz['titre'])?></h3>
+                                <p class="text-gray-600 mb-4 text-sm"><?= htmlspecialchars($quiz['description'])?></p>
                                 <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                                    <span><i class="fas fa-question-circle mr-1"></i><?= $quiz['Question_count']?> questions</span>
+                                    <span><i class="fas fa-question-circle mr-1"></i><?= htmlspecialchars($quiz['Question_count'])?> questions</span>
                                     <span><i class="fas fa-clock mr-1"></i>10 min</span>
                                 </div>
                                 <form action="<?php htmlspecialchars('Questions.php')?>" method="post">
