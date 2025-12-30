@@ -16,8 +16,8 @@ ini_set('session.cookie_secure', 0); // Mettre à 1 si HTTPS
 ini_set('session.cookie_samesite', 'Strict');
 
 // Durée de vie de la session (30 minutes)
-ini_set('session.gc_maxlifetime', 1800);
-session_set_cookie_params(1800);
+ini_set('session.gc_maxlifetime', 10000);
+session_set_cookie_params(10000);
 
 // Démarrage de la session
 if (session_status() === PHP_SESSION_NONE) {

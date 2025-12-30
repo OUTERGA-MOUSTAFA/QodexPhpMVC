@@ -130,15 +130,4 @@ class Quiz {
         $result = $this->db->query($sql, [$quizId]);
         return $result->fetch();
     }
-
-    public function getQuizCategories(){
-         $sql = "SELECT c.id,
-            COUNT(CASE WHEN q.is_active = 1 THEN 1 END) AS total_actifs
-        FROM categories c 
-        LEFT JOIN quiz q ON c.id = q.categorie_id
-        GROUP BY c.id  ORDER BY nom ASC";
-        
-        $result = $this->db->query($sql);
-        return $result->fetchAll();
-    }
 }

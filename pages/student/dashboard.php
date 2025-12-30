@@ -8,9 +8,9 @@ require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Category.php';
-require_once '../../classes/Quiz.php';
+require_once '../../classes/Quiz_Student.php';
 
-// Vérifier que l'utilisateur est isStudent
+// Vérifier que l'utilisateur est enseignant
 Security::requireStudent();
 
 // Variables pour la navigation
@@ -21,21 +21,49 @@ $pageTitle = 'Tableau de bord';
 $EtudiantId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'];
 
+$success = $_SESSION['quiz_success'] ?? '';
+$error = $_SESSION['quiz_error'] ?? '';
+unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
+
 // Récupérer les statistiques
 $categoryObj = new Category();
-$quizObj = new Quiz();
+$quizObj = new Quiz_Student();
 
 
 
-$categories = $categoryObj->getAll();
+// $categories = $categoryObj->getAll();
 $quizzes = $quizObj->getQuizCategories();
 // echo '<pre>';
 // print_r($quizzes);
 // echo '<pre>';
+// $totalQuizzes = count($quizzes);
+// $totalCategories = count($categories);
+
+//Calculer le nombre total de questions
+$totalQuestions = 0;
+// foreach ($quizzes as $quiz) {
+//     $totalQuestions += $quiz['questions_count'];
+// }
+
+// Calculer le nombre total de participants
+$totalParticipants = 0;
+// foreach ($quizzes as $quiz) {
+//     $totalParticipants += $quiz['participants_count'];
+// }
 
 // Initiales pour l'avatar
 $initials = strtoupper(substr($userName, 0, 1) . substr(explode(' ', $userName)[1] ?? '', 0, 1));
- print_r($initials);
+// print_r($EtudiantId);
+// echo '<pre>';
+// print_r($quizzes);
+// echo '<pre>';
+// var_dump($quizzes);
+
+// if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+//     header('Location: quiz.php');
+//     exit;
+// }
+
 ?>
 <?php include '../partials/header.php'; ?>
 
@@ -63,38 +91,64 @@ $initials = strtoupper(substr($userName, 0, 1) . substr(explode(' ', $userName)[
                     <p class="text-xl text-green-100 mb-6">Passez des quiz et suivez votre progression</p>
                 </div>
             </div>
-
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <h2 class="text-3xl font-bold text-gray-900 mb-8">Catégories Disponibles</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                    <?php 
                    $colors = ['blue', 'purple', 'green', 'red', 'yellow', 'pink', 'indigo', 'teal'];
-                        foreach ($categories as $index => $category): 
+                   $logos = ['fa-solid fa-database', 'fa-regular fa-file-code', 'fa-brands fa-deviantart', 'fa-solid fa-terminal', 'fa-solid fa-microchip', 'fa-solid fa-server'];
+                        foreach ($quizzes as $index => $quiz): 
                         $color = $colors[$index % count($colors)];
+                        $logo = $logos[$index % count($logos)];
 
-                        $quizcout = $quizzes[$index % count($quizzes)];
                     ?>
                         <div onclick="showStudentSection('categoryQuizzes')" class="bg-<?= $color?> rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden group cursor-pointer">
-                            <form action="" method="post">
-                                <div class="bg-gradient-to-br from-<?= $color?>-600 to-<?= $color?>-500 p-6 text-white">
-                                    <i class="fas fa-code text-4xl mb-3"></i>
-                                    <h3 class="text-xl font-bold"><?= $category['nom']?></h3>
+                            <div class="bg-gradient-to-br from-<?= $color?>-600 to-<?= $color?>-500 p-6 text-white">
+                                <i class="<?= $logo?> text-4xl mb-3"></i>
+                                <h3 class="text-xl font-bold"><?=htmlspecialchars( $quiz['nom'],ENT_QUOTES, 'UTF-8')?></h3>
+                            </div>
+                            <div class="p-6">
+                                <p class="text-gray-600 mb-4"> desc: <?= htmlspecialchars($quiz["description"],ENT_QUOTES, 'UTF-8') ?></p>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i><?= $quiz["total_actifs"] ?> quiz</span>
+                                    <form action="<?= htmlspecialchars('quiz.php') ?>" method="post">
+                                        <input type="hidden" name="hidden" value='<?= htmlspecialchars($quiz["id"]); ?>'>
+                                        <button type="submit" name='send' class="text-<?= $color?>-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</button>
+                                    </form>
+                                    
                                 </div>
-                                <div class="p-6">
-                                    <p class="text-gray-600 mb-4"> desc: <?= $category["description"] ?></p>
-                                    <div class="flex justify-between items-center text-sm">
-                                        <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i><?= $quizcout["total_actifs"]; ?> quiz</span>
-                                        <form action="" method="post">
-                                            <input type="hidden" name="id" value='<?= $quizcout["id"]; ?>'>
-                                            <button name="Explorer" class="text-green-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</button>
-                                        </form>
-                                        
-                                    </div>                            
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     <?php endforeach;?>
+                    <div onclick="showStudentSection('categoryQuizzes', 'JavaScript')" class="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden group cursor-pointer">
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white">
+                            <i class="fas fa-laptop-code text-4xl mb-3"></i>
+                            <h3 class="text-xl font-bold">JavaScript</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-600 mb-4">Programmation interactive</p>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i>8 quiz</span>
+                                <span class="text-purple-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div onclick="showStudentSection('categoryQuizzes', 'PHP/MySQL')" class="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden group cursor-pointer">
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 text-white">
+                            <i class="fas fa-database text-4xl mb-3"></i>
+                            <h3 class="text-xl font-bold">PHP/MySQL</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-600 mb-4">Backend et bases de données</p>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i>10 quiz</span>
+                                <span class="text-green-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div onclick="showStudentSection('studentResults')" class="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden group cursor-pointer">
                         <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 text-white">
                             <i class="fas fa-chart-line text-4xl mb-3"></i>
