@@ -36,4 +36,11 @@ class Quiz_Student {
         return $stmt->fetchAll();
     }
 
+    // getAllQuestion
+    public function getById($id) {
+        $sql = "SELECT * FROM categories WHERE id = ?";
+        $result = $this->db->query($sql, [$id]);
+        return $result->fetch();
+    }  
+
 }

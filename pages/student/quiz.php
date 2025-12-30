@@ -1,12 +1,11 @@
 <?php
 /**
- * Page: Gestion des Catégories
- * Permet de créer, modifier et supprimer des catégories
+ * Page: Gestion des quizs de Catégorie
  */
 require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
-require_once '../../classes/Category.php';
+require_once '../../classes/Category_Student.php';
 require_once '../../classes/Quiz_Student.php';
 
 // Vérifier que l'utilisateur est requireStudent
@@ -31,7 +30,7 @@ if (!isset($_POST['hidden'])) {
     die("Accès non autorisé");
 }else{
 
-    $categoryid =  new Category();
+    $categoryid =  new Categories();
     $idCategorie = $categoryid->getById(strip_tags($_POST['hidden']));
 
     if((int)$_POST['hidden'] !== (int) $idCategorie['id']) {
@@ -98,8 +97,8 @@ $quizzes = $quiz->getQuizActive(strip_tags($_POST['hidden']));
                                     <span><i class="fas fa-question-circle mr-1"></i><?= htmlspecialchars($quiz['Question_count'])?> questions</span>
                                     <span><i class="fas fa-clock mr-1"></i>10 min</span>
                                 </div>
-                                <form action="<?php htmlspecialchars('Questions.php')?>" method="post">
-                                    <input type="hidden" name="hidden" value='<?= $quiz['id']?>'>
+                                <form action="<?= htmlspecialchars('Questions.php')?>" method="post">
+                                    <input type="hidden" name="hidden" value='<?= htmlspecialchars($quiz['id'])?>'>
                                     <button type='submit' class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                                         <i class="fas fa-play mr-2"></i>Commencer le Quiz
                                     </button>

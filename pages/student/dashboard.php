@@ -7,7 +7,7 @@
 require_once '../../config/database.php';
 require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
-require_once '../../classes/Category.php';
+require_once '../../classes/Category_Student.php';
 require_once '../../classes/Quiz_Student.php';
 
 // Vérifier que l'utilisateur est enseignant
@@ -26,7 +26,7 @@ $error = $_SESSION['quiz_error'] ?? '';
 unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
 
 // Récupérer les statistiques
-$categoryObj = new Category();
+$categoryObj = new Categories();
 $quizObj = new Quiz_Student();
 
 
@@ -113,7 +113,7 @@ $initials = strtoupper(substr($userName, 0, 1) . substr(explode(' ', $userName)[
                                 <div class="flex justify-between items-center text-sm">
                                     <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i><?= $quiz["total_actifs"] ?> quiz</span>
                                     <form action="<?= htmlspecialchars('quiz.php') ?>" method="post">
-                                        <input type="hidden" name="hidden" value='<?= htmlspecialchars($quiz["id"]); ?>'>
+                                        <input type="hidden" name="hidden" value='<?= htmlspecialchars($quiz["id"]) ?>'>
                                         <button type="submit" name='send' class="text-<?= $color?>-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</button>
                                     </form>
                                     

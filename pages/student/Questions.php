@@ -1,3 +1,37 @@
+
+<?php
+
+require_once '../../config/database.php';
+require_once '../../classes/Database.php';
+require_once '../../classes/Security.php';
+require_once '../../classes/Category_Student.php';
+require_once '../../classes/Quiz_Student.php';
+//require_once '../../classes/Question_Student.php';
+
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: quiz.php');
+    exit;
+}
+
+if (!isset($_POST['hidden'])) {
+    var_dump($_POST['hidden']);
+    die("Accès non autorisé");
+}else{
+
+    $quizId =  new Categories();
+    $idquiz = $quizId->getById(strip_tags($_POST['hidden']));
+
+    if((int)$_POST['hidden'] !== (int) $idquiz['id']) {
+        die('Quiz invalide');
+    }
+
+}
+$quiz = new Quiz_Student();
+$quizzes = $quiz->getQuestion(strip_tags($_POST['hidden']));
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
