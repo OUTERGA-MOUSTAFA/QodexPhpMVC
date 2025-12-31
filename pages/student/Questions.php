@@ -6,6 +6,7 @@ require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Category_Student.php';
 require_once '../../classes/Quiz_Student.php';
+require_once '../../classes/Question_Student.php';
 //require_once '../../classes/Question_Student.php';
 
 
@@ -22,10 +23,10 @@ if (!isset($_POST['hidden'])) {
     $quizId =  new Categories();
     $idquiz = $quizId->getById(strip_tags($_POST['hidden']));
 
-    if((int)$_POST['hidden'] !== (int) $idquiz['id']) {
+    if((int)$_POST['hidden'] !== (int) $idquiz["id"]) {
         die('Quiz invalide');
     }
-
+    var_dump($idquiz["id"]);
 }
 $questions = new Questions();
 $questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
@@ -47,6 +48,23 @@ $questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
     <div id="takeQuiz" class="student-section">
         
     hello question
+    <!-- Quiz Taking Interface -->
+        <div id="takeQuiz" class="student-section hidden">
+            <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2" id="quizTitle">Les Bases de HTML5</h1>
+                            <p class="text-green-100">Question <span id="currentQuestion">1</span> sur <span id="totalQuestions">20</span></p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-green-100 mb-1">Temps restant</div>
+                            <div class="text-3xl font-bold" id="timer">30:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="bg-white rounded-xl shadow-lg p-8">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6" id="questionText">
@@ -68,7 +86,7 @@ $questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600  option-selected"></div>
                             </div>
-                            <span class="text-lg">&lt;navigation&gt;</span>
+                            <span class="text-lg">&lt;navigation&gt;</span> 
                         </div>
                     </div>
 
