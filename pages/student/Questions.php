@@ -21,6 +21,7 @@ if (!isset($_POST['hidden'])) {
 }else{
     // var_dump((int)$_POST['hidden']);
     $quizId =  new Categories();
+    // get id of this id categorie 
     $idquiz = $quizId->getById(strip_tags($_POST['hidden']));
 
     if((int)$_POST['hidden'] !== (int) $idquiz["id"]) {
@@ -29,11 +30,12 @@ if (!isset($_POST['hidden'])) {
     
 }
 $questions = new Question_Student();
+// get questions this quiz_id hidden
 $questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
 // echo "<pre>";
 // print_r($questionsArray);
 // echo "<pre>";
-
+// calcule combien question on ce quiz id hidden
 $couterQuest = 0;
 foreach($questionsArray as $ques){
     $couterQuest++;
@@ -72,7 +74,7 @@ foreach($questionsArray as $ques){
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="bg-white rounded-xl shadow-lg p-8">
                 <h3 class="text-2xl font-bold text-gray-900 mb-6" id="questionText">
-                    <?= $questionsArray[0]["question"]?>
+                    <?= $questionsArray[0]["question"];//question?>
                 </h3>
 
                 <div class="space-y-4">
@@ -81,7 +83,7 @@ foreach($questionsArray as $ques){
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600 hidden option-selected"></div>
                             </div>
-                            <span class="text-lg"><?= $questionsArray[0]["option1"]?></span>
+                            <span class="text-lg"><?= $questionsArray[0]["option1"]//option1 de question ?></span>
                         </div>
                     </div>
 
@@ -90,7 +92,7 @@ foreach($questionsArray as $ques){
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600  option-selected"></div>
                             </div>
-                            <span class="text-lg"><?= $questionsArray[0]["option2"]?></span> 
+                            <span class="text-lg"><?= $questionsArray[0]["option2"]//option2 de question?></span> 
                         </div>
                     </div>
 
@@ -99,7 +101,7 @@ foreach($questionsArray as $ques){
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600 hidden option-selected"></div>
                             </div>
-                            <span class="text-lg"><?= $questionsArray[0]["option3"]?></span>
+                            <span class="text-lg"><?= $questionsArray[0]["option3"] //option3 de question?></span>
                         </div>
                     </div>
 
@@ -108,7 +110,7 @@ foreach($questionsArray as $ques){
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600 hidden option-selected"></div>
                             </div>
-                            <span class="text-lg"><?= $questionsArray[0]["question"]?></span>
+                            <span class="text-lg"><?= $questionsArray[0]["option 4"]//option4 de question?></span>
                         </div>
                     </div>
                 </div>

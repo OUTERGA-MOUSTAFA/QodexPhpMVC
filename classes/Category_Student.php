@@ -1,7 +1,7 @@
 <?php
 /**
- * Classe Category
- * Gère les opérations CRUD sur les catégories
+ * Classe Categories Student
+ * Gère les opérations
  */
 
 class Categories {
