@@ -1,7 +1,7 @@
 <?php
 /**
  * Classe Result
- * Gère les résultats des quiz (US7 - Voir ses résultats)
+ * Créer Result (Model)"
  * 
  * SÉCURITÉ: L'utilisateur ne peut voir QUE ses propres résultats
  */

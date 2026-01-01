@@ -16,7 +16,7 @@ Security::requireStudent();
 $studentId = $_SESSION['user_id'];
 $userName = $_SESSION['user_nom'];
 
-unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
+// unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
 
 // التحقق من الطريقة
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -142,16 +142,15 @@ foreach($quizzes as $quizItem) {
                             
                             <!-- الزر حسب حالة الكويز -->
                             <?php if($quizCompleted): ?>
-                                <form action="<?= htmlspecialchars('location:results.php')?>" method="post">
-                                    <button type='submit' class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                                <form action="<?= htmlspecialchars('results.php')?>" method="post">
+                                    <button type='submit'  name="go" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
                                         <i class="fas fa-chart-bar mr-2"></i> Voir les résultats
                                     </button>
                                 </form>
                             <?php else: ?>
-                                <form action="<?= htmlspecialchars('location:Questions.php')?>" method="post">
+                                <form action="<?= htmlspecialchars('Questions.php')?>" method="post">
                                     <input type="hidden" name="quiz_id" value="<?= $quizItem['id']?>">
-                                    <?= print_r($quizItem['id'])?> 
-                                    <button type='submit' class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                                    <button type='submit' name="go"  class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                                         <i class="fas fa-play mr-2"></i> Commencer le Quiz
                                     </button>
                                 </form>
