@@ -130,4 +130,5 @@ class Quiz {
         $result = $this->db->query($sql, [$quizId]);
         return $result->fetch();
     }
+    
 }

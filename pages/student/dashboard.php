@@ -10,8 +10,8 @@ require_once '../../classes/Security.php';
 require_once '../../classes/Category_Student.php';
 require_once '../../classes/Quiz_Student.php';
 
-// Vérifier que l'utilisateur est enseignant
-Security::requireStudent();
+// Vérifier que l'utilisateur est role= "etudiant", id_user, name_user
+ Security::requireStudent();
 
 // Variables pour la navigation
 $currentPage = 'dashboard';
@@ -113,7 +113,7 @@ $initials = strtoupper(substr($userName, 0, 1) . substr(explode(' ', $userName)[
                                 <div class="flex justify-between items-center text-sm">
                                     <span class="text-gray-500"><i class="fas fa-clipboard-list mr-2"></i><?= $quiz["total_actifs"] ?> quiz</span>
                                     <form action="<?= htmlspecialchars('quiz.php') ?>" method="post">
-                                        <input type="hidden" name="hidden" value='<?= htmlspecialchars($quiz["id"]) ?>'>
+                                        <input type="hidden" name="categorie" value='<?= htmlspecialchars($quiz["id"]) ?>'>
                                         <button type="submit" name='send' class="text-<?= $color?>-600 font-semibold group-hover:translate-x-2 transition-transform">Explorer →</button>
                                     </form>
                                     

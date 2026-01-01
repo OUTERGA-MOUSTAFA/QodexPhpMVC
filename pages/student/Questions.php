@@ -1,37 +1,40 @@
 
 <?php
 
-require_once '../../config/database.php';
-require_once '../../classes/Database.php';
+// require_once '../../config/database.php';
+// require_once '../../classes/Database.php';
 require_once '../../classes/Security.php';
 require_once '../../classes/Category_Student.php';
 require_once '../../classes/Quiz_Student.php';
 require_once '../../classes/Question_Student.php';
 //require_once '../../classes/Question_Student.php';
 
+// Vérifier que l'utilisateur est role= "etudiant", id_user, name_user
+ Security::requireStudent();
 
+// when refresh page method request change to GET
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: quiz.php');
     exit;
 }
 
-if (!isset($_POST['hidden'])) {
-    // var_dump($_POST['hidden']);
+if (!isset($_POST['quiz_id'])) {
+    // var_dump($_POST['quiz_id']);
     die("Accès non autorisé");
 }else{
-    // var_dump((int)$_POST['hidden']);
+    // var_dump((int)$_POST['quiz_id']);
     $quizId =  new Categories();
     // get id of this id categorie 
-    $idquiz = $quizId->getById(strip_tags($_POST['hidden']));
+    $idquiz = $quizId->getById(strip_tags($_POST['quiz_id']));
 
-    if((int)$_POST['hidden'] !== (int) $idquiz["id"]) {
+    if((int)$_POST['quiz_id'] !== (int) $idquiz["id"]) {
         die('Quiz invalide');
     }
     
 }
 $questions = new Question_Student();
-// get questions this quiz_id hidden
-$questionsArray = $questions->getQuestion(strip_tags($_POST['hidden']));
+// get questions this quiz_id quiz_id
+$questionsArray = $questions->getQuestion(strip_tags($_POST['quiz_id']));
 // echo "<pre>";
 // print_r($questionsArray);
 // echo "<pre>";
@@ -40,6 +43,8 @@ $couterQuest = 0;
 foreach($questionsArray as $ques){
     $couterQuest++;
 }
+
+$questionsJson = json_encode($questionsArray, JSON_UNESCAPED_UNICODE);
 ?>
 
 
@@ -56,7 +61,7 @@ foreach($questionsArray as $ques){
     
 <!-- Quiz Taking Interface -->
     <div id="takeQuiz" class="student-section">
-            <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
+            <div class="bg-gradient-to-r from-green-600  to-teal-600 text-white">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div class="flex justify-between items-center">
                         <div>
@@ -72,9 +77,15 @@ foreach($questionsArray as $ques){
             </div>
         </div>
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <?php echo '<pre>';print_r($questionsArray); echo '</pre>';?>
+            <form id='form_id'></form>
+            <input type="hidden" name="quiz_id" value="<?= htmlspecialchars($_POST['quiz_id']) ?>" id="quizIdInput">
+            <input type="hidden" name="question_id" value="<?= htmlspecialchars($_POST['question_id']) ?>" id="questionIdInput">
             <div class="bg-white rounded-xl shadow-lg p-8">
+
                 <h3 class="text-2xl font-bold text-gray-900 mb-6" id="questionText">
                     <?= $questionsArray[0]["question"];//question?>
+                    
                 </h3>
 
                 <div class="space-y-4">
@@ -110,9 +121,10 @@ foreach($questionsArray as $ques){
                             <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-4 option-radio">
                                 <div class="w-4 h-4 rounded-full bg-green-600 hidden option-selected"></div>
                             </div>
-                            <span class="text-lg"><?= $questionsArray[0]["option 4"]//option4 de question?></span>
+                            <span class="text-lg"><?= $questionsArray[0]["option4"]//option4 de question?></span>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="flex justify-between mt-8">
@@ -127,6 +139,9 @@ foreach($questionsArray as $ques){
             </div>
         </div>
     </div>
-    
+    <script>
+
+        const arrayQuestions = <?= $questionsArray?>
+    </script>
 </body>
 </html>
