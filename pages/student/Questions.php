@@ -59,8 +59,6 @@ $couterQuest = 0;
 foreach($questionsArray as $ques){
     $couterQuest++;
 }
-$time_limit = 30;
-$questionsJson = json_encode($questionsArray, JSON_UNESCAPED_UNICODE);
 ?>
 
 
@@ -148,7 +146,7 @@ $questionsJson = json_encode($questionsArray, JSON_UNESCAPED_UNICODE);
     <script>
         // timer
         
-        timeLeft = 30;
+        let timeLeft = 30;
         let timer = setInterval(() => {
         timeLeft--;
         document.getElementById('timer').textContent = timeLeft;
@@ -161,7 +159,7 @@ $questionsJson = json_encode($questionsArray, JSON_UNESCAPED_UNICODE);
 
         // get csrf_token
         let csrfToken = document.querySelector('input[name="csrf_token"]').value
-        let questions = <?= json_encode($questionsJson); ?>
+        let questions = <?= json_encode($questionsArray, JSON_UNESCAPED_UNICODE); ?>;
         let index = 0;
         let quizId = <?= (int)$quiz_id ?>;
         let storageKey = "quiz_" + quizId + "_answers";
