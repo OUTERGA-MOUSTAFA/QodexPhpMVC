@@ -13,10 +13,11 @@
     <div id="studentResults" class="student-section">
         <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <form action="<?= htmlspecialchars('bashboard.php')?>"></form>
-                <button type='submit' class="text-white hover:text-green-100 mb-4">
-                    <i class="fas fa-arrow-left mr-2"></i>Retour au tableau de bord
-                </button>
+                <form action="<?= htmlspecialchars('dashboard.php')?>">
+                    <button type='submit' class="text-white hover:text-green-100 mb-4">
+                        <i class="fas fa-arrow-left mr-2"></i> Retour au tableau de bord
+                    </button>
+                </form>
                 <h1 class="text-4xl font-bold mb-2">Mes Résultats</h1>
                 <p class="text-xl text-green-100">Suivez votre progression et vos performances</p>
             </div>

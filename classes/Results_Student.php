@@ -6,7 +6,7 @@
  * SÉCURITÉ: L'utilisateur ne peut voir QUE ses propres résultats
  */
 
-class Result_student {
+class Result_Student {
     private $db;
     
     public function __construct() {

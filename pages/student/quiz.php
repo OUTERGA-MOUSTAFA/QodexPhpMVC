@@ -12,42 +12,43 @@ require_once '../../classes/Results_Student.php';
 // Vérifier que l'utilisateur est role= "etudiant", id_user, name_user
 Security::requireStudent();
 
-// Récupérer les données
-$studentId = $_SESSION['user_id'];
-$userName = $_SESSION['user_nom'];
-
 // unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
 
-// التحقق من الطريقة
+// method should be post
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: dashboard.php');
     exit;
 }
 
-// التحقق من categorie field
+// categorie field
 if (!isset($_POST['categorie'])) {
     die("Accès non autorisé");
 }
-
-// التحقق من صحة الـ category
+$categorieId = (int) $_POST['categorie'];
+if ($categorieId <= 0) {
+    die('invalide');
+}
+// check if it same categorie only is it same id
 $category = new Categories();
 $categoryData = $category->getById(strip_tags($_POST['categorie']));
-
+//var_dump((int)$categoryData);
 if(!$categoryData || (int)$_POST['categorie'] !== (int)$categoryData['id']) {
-    die('Catégorie invalide');
+    die('Catégorie invalide you play!');
 }
 
-// الحصول على الكويزات النشطة
+
+// get quiz activ
 $quiz = new Quiz_Student();
 $quizzes = $quiz->getQuizActive(strip_tags($_POST['categorie']));
 
-// إنشاء كائن النتائج
-$results = new Result_student();
 
-// إنشاء مصفوفة لتتبع الكويزات التي تم إجراؤها
+$studentId = $_SESSION['user_id'];
+// array of quiz completed
 $completedQuizzes = [];
+
+$results = new Result_Student();
 foreach($quizzes as $quizItem) {
-    // التحقق إذا الطالب أجرى هذا الكويز
+    //check that user passed this quiz to not let him pass agin
     $hasTakenQuiz = $results->isPassQuiz($quizItem['id'], $studentId);
     $completedQuizzes[$quizItem['id']] = $hasTakenQuiz;
 }
@@ -130,8 +131,7 @@ foreach($quizzes as $quizItem) {
                                     30 min
                                 </span>
                             </div>
-                            
-                            <!-- Badge selon حالة الكويز -->
+                            <!-- if quiz completed add this div ofcard as passed quiz -->
                             <?php if($quizCompleted): ?>
                                 <div class="mb-4">
                                     <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
@@ -140,16 +140,20 @@ foreach($quizzes as $quizItem) {
                                 </div>
                             <?php endif; ?>
                             
-                            <!-- الزر حسب حالة الكويز -->
+                            <!-- button redirect to him results page-->
                             <?php if($quizCompleted): ?>
-                                <form action="<?= htmlspecialchars('results.php')?>" method="post">
+                                <form action="<?= htmlspecialchars('results.php')?>">
                                     <button type='submit'  name="go" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
                                         <i class="fas fa-chart-bar mr-2"></i> Voir les résultats
                                     </button>
                                 </form>
+                            <!-- else to questions page-->
                             <?php else: ?>
                                 <form action="<?= htmlspecialchars('Questions.php')?>" method="post">
-                                    <input type="hidden" name="quiz_id" value="<?= $quizItem['id']?>">
+                                    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+
+                                    <input type="hidden" name="quiz_id" value="<?= htmlspecialchars($quizItem['id'])?>">
+                                    
                                     <button type='submit' name="go"  class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                                         <i class="fas fa-play mr-2"></i> Commencer le Quiz
                                     </button>

@@ -1,10 +1,10 @@
 <?php
 /**
- * PARTIAL: Navigation Enseignant
- * Barre de navigation pour les enseignants
+ * PARTIAL: Navigation Etudent
+ * Barre de navigation pour les etudents
  */
 
-// Calculer les initiales
+// get first letter on him name 
 $userName = $userName ?? $_SESSION['user_nom'] ?? 'User';
 $initials = strtoupper(substr($userName, 0, 1) . substr(explode(' ', $userName)[1] ?? '', 0, 1));
 
