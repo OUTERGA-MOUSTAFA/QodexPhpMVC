@@ -103,4 +103,12 @@ class Security {
             exit();
         }
     }
+
+     public static function againstHijacking(): void {
+        header("X-Frame-Options: DENY");
+        header("X-Content-Type-Options: nosniff");
+        header("X-XSS-Protection: 1; mode=block");
+        header("Referrer-Policy: strict-origin");
+        header("Content-Security-Policy: frame-ancestors 'none'");
+    }
 }

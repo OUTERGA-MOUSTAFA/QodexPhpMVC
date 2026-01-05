@@ -1,15 +1,16 @@
 <?php
-require_once '../classes/Database.php';
+require_once '../Database.php';
 require_once '../config/database.php';
-require_once '../classes/Security.php';
+require_once '../Security.php';
+
+header('Content-Type: application/json; charset=utf-8');
 
 Security::requireStudent();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     exit(json_encode(['error' => 'Method Not Allowed']));
-} 
-Security::requireStudent();
+}
 
 //check CSRF TOKEN
 $headers = verifyCSRFToken();
@@ -20,34 +21,40 @@ if (
     http_response_code(403);
     exit(json_encode(['error' => 'CSRF token invalid']));
 }
+
+
 $data = json_decode(file_get_contents("php://input"), true);
 
-$questionId = (int)$data['question_id'];
-$answer = trim($data['answer']);
-
-if (!isset($questionId, $answer)){
+if (!is_array($data) || !isset($data['question_id'], $data['answer'])) {
     http_response_code(400);
-    exit(json_encode(['error' => 'Bad Request']));
+    echo json_encode(['error' => 'Invalid JSON']);
+    exit;
 }
 
-$questionId = filter_var($questionId, FILTER_VALIDATE_INT);
-$answer = trim($answer);
+$questionId = filter_var($data['question_id'], FILTER_VALIDATE_INT);
+$answer = trim($data['answer']);
 
 if (!$questionId || $answer === '') {
     http_response_code(400);
-    exit(json_encode(['error' => 'Invalid data']));
+    echo json_encode(['error' => 'Invalid data']);
+    exit;
 }
 
+
+// here i get correct_option from database by questionId sended
 $pdo = Database::getConexion();
-
-
 $sql = "SELECT correct_option FROM questions WHERE id = ?";
-$stmt = $pdo->query($sql, [$questionId]);
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$questionId]);
 $row = $stmt->fetch();
 
-$isCorrect = ($row && $row['correct_option'] === $answer);
-header('Content-Type: application/json');
+// $sql = "SELECT correct_option FROM questions WHERE id = ?";
+// $stmt = $pdo->query($sql, [$questionId]);
+
+//here i test answer of student to correct answer on database
+$isCorrect = $row && $row['correct_option'] === $answer;
+
 echo json_encode([
-    "correct" => $isCorrect,
+    'correct' => $isCorrect,
     'message' => 'Good answer'
 ]);

@@ -12,7 +12,8 @@ require_once '../../classes/Quiz_Student.php';
 
 // Vérifier que l'utilisateur est role= "etudiant", id_user, name_user
  Security::requireStudent();
-
+ // server tell browser to not use iframe
+    Security::againstHijacking();
 // Variables pour la navigation
 $currentPage = 'dashboard';
 $pageTitle = 'Tableau de bord';

@@ -1,116 +1,315 @@
--- =====================================================
--- Base de données QuizMaster
--- Script SQL simple pour les débutants
--- =====================================================
-
--- Créer la base de données
-CREATE DATABASE IF NOT EXISTS quiz_platform CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Dec 29, 2025 at 09:01 AM
+-- Server version: 8.0.30
+-- PHP Version: 8.1.10
+#CREATE DATABASE IF NOT EXISTS quiz_platform CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE quiz_platform;
+/*
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- =====================================================
--- Table: users (Utilisateurs)
--- =====================================================
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('enseignant', 'etudiant') DEFAULT 'enseignant',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL
-);
 
--- =====================================================
--- Table: categories (Catégories de quiz)
--- =====================================================
-CREATE TABLE IF NOT EXISTS categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    description TEXT,
-    enseignant_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (enseignant_id) REFERENCES users(id) ON DELETE CASCADE
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT ;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS ;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION ;
+/*!40101 SET NAMES utf8mb4 ;
 
--- =====================================================
--- Table: quiz (Les quiz)
--- =====================================================
-CREATE TABLE IF NOT EXISTS quiz (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    titre VARCHAR(255) NOT NULL,
-    description TEXT,
-    categorie_id INT NOT NULL,
-    enseignant_id INT NOT NULL,
-    is_active TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (categorie_id) REFERENCES categories(id) ON DELETE CASCADE,
-    FOREIGN KEY (enseignant_id) REFERENCES users(id) ON DELETE CASCADE
-);
+--
+-- Database: `quiz_platform`
+--
 
--- =====================================================
--- Table: questions (Les questions des quiz)
--- =====================================================
-CREATE TABLE IF NOT EXISTS questions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    quiz_id INT NOT NULL,
-    question TEXT NOT NULL,
-    option1 VARCHAR(255) NOT NULL,
-    option2 VARCHAR(255) NOT NULL,
-    option3 VARCHAR(255) NOT NULL,
-    option4 VARCHAR(255) NOT NULL,
-    correct_option TINYINT NOT NULL CHECK (correct_option BETWEEN 1 AND 4),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (quiz_id) REFERENCES quiz(id) ON DELETE CASCADE
-);
+-- --------------------------------------------------------
 
--- =====================================================
--- Table: results (Résultats des quiz - US7)
--- =====================================================
-CREATE TABLE IF NOT EXISTS results (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    quiz_id INT NOT NULL,
-    etudiant_id INT NOT NULL,
-    score INT NOT NULL DEFAULT 0,
-    total_questions INT NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (quiz_id) REFERENCES quiz(id) ON DELETE CASCADE,
-    FOREIGN KEY (etudiant_id) REFERENCES users(id) ON DELETE CASCADE
-);
+--
+-- Table structure for table `categories`
+--
+/*
+CREATE TABLE `categories` (
+  `id` int NOT NULL,
+  `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_by` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=UTF8MB4_UNICODE_CI;
 
--- Index pour améliorer les performances de recherche
-CREATE INDEX idx_results_etudiant ON results(etudiant_id);
-CREATE INDEX idx_results_quiz ON results(quiz_id);
-CREATE INDEX idx_quiz_active ON quiz(is_active);
+--
+-- Dumping data for table `categories`
+--
 
--- =====================================================
--- Données de test (optionnel)
--- =====================================================
+INSERT INTO `categories` (`id`, `nom`, `description`, `created_by`, `created_at`, `updated_at`) VALUES
+(2, 'HTML/CSS', 'Nostrud at perspicia', 1, '2025-12-25 20:04:24', '2025-12-25 20:04:24'),
+(3, 'SQL', 'Fugiat qui molestia', 1, '2025-12-25 20:21:59', '2025-12-29 09:00:46'),
+(4, 'HTML/CSS', 'Anim veritatis anim', 2, '2025-12-25 21:23:02', '2025-12-25 21:23:13'),
+(5, 'Javascript', 'Dolorem laboris accu', 3, '2025-12-26 23:41:58', '2025-12-29 09:00:41'),
+(6, 'Java', 'Sed est illum paria', 1, '2025-12-28 21:19:22', '2025-12-29 09:00:35');
 
--- Créer un enseignant de test
--- Mot de passe: password123 (hashé avec bcrypt)
-INSERT INTO users (nom, email, password_hash, role) VALUES 
-('Prof Demo', 'prof@demo.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'enseignant');
+-- --------------------------------------------------------
 
--- Créer un étudiant de test
-INSERT INTO users (nom, email, password_hash, role) VALUES 
-('Etudiant Test', 'etudiant@demo.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'etudiant');
+--
+-- Table structure for table `questions`
+--
 
--- Créer une catégorie de test
-INSERT INTO categories (nom, description, enseignant_id) VALUES 
-('Mathématiques', 'Quiz de mathématiques', 1);
+CREATE TABLE `questions` (
+  `id` int NOT NULL,
+  `quiz_id` int NOT NULL,
+  `question` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option1` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option2` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option3` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option4` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `correct_option` tinyint NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ;
 
--- Créer un quiz de test
-INSERT INTO quiz (titre, description, categorie_id, enseignant_id, is_active) VALUES 
-('Quiz Addition', 'Test vos connaissances en addition', 1, 1, 1);
+--
+-- Dumping data for table `questions`
+--
 
--- Créer des questions de test
-INSERT INTO questions (quiz_id, question, option1, option2, option3, option4, correct_option) VALUES 
-(1, 'Combien fait 2 + 2 ?', '3', '4', '5', '6', 2),
-(1, 'Combien fait 5 + 3 ?', '7', '8', '9', '10', 2),
-(1, 'Combien fait 10 + 5 ?', '13', '14', '15', '16', 3);
+INSERT INTO `questions` (`id`, `quiz_id`, `question`, `option1`, `option2`, `option3`, `option4`, `correct_option`, `created_at`) VALUES
+(3, 2, 'Reiciendis repellend', 'Dignissimos ex est e', 'Commodo occaecat ear', 'Consequatur Atque v', 'Dolorem officia fugi', 1, '2025-12-25 20:22:30'),
+(4, 2, 'Officia unde fugit', 'Officiis ex veniam', 'Ut necessitatibus ip', 'Dicta voluptatum sae', 'Dolor reiciendis ut', 3, '2025-12-25 20:22:30'),
+(5, 2, 'Odio optio non et l', 'Vitae voluptate ut m', 'Nesciunt ducimus v', 'Sed molestiae atque', 'Voluptatem Sunt quo', 1, '2025-12-25 20:22:30'),
+(6, 2, 'Numquam sed et exped', 'Atque esse labore a', 'Est consequatur Iur', 'Nulla quam modi quia', 'Excepteur qui est c', 1, '2025-12-25 20:22:30'),
+(7, 2, 'Minus dolore cum eni', 'Sed autem non volupt', 'Excepturi qui volupt', 'Impedit explicabo', 'Similique id impedi', 4, '2025-12-25 20:22:30'),
+(8, 2, 'Deserunt et in volup', 'Necessitatibus qui n', 'Id blanditiis et sim', 'Sapiente dolore quas', 'Nostrum est et sunt', 4, '2025-12-25 20:22:30'),
+(9, 2, 'Eu itaque pariatur', 'Culpa cillum ratione', 'Ullamco tempora dolo', 'Odit reprehenderit e', 'Voluptate laborum as', 4, '2025-12-25 20:22:30'),
+(10, 2, 'Omnis quia odit quo', 'Modi ea sit quas dig', 'Sit quo assumenda ex', 'Aliquam impedit sun', 'Voluptates dolore re', 3, '2025-12-25 20:22:30'),
+(11, 2, 'At consequat Dolore', 'Dolores sit quaerat', 'Lorem eveniet ipsam', 'Inventore occaecat n', 'Quisquam fugit cons', 4, '2025-12-25 20:22:30'),
+(13, 3, 'Non non eiusmod veni', 'Sunt nostrud laborum', 'Rerum voluptatem Mo', 'Autem facilis accusa', 'Molestiae quia ex au', 1, '2025-12-25 21:23:37'),
+(14, 3, 'Eaque rerum numquam', 'Voluptas laboriosam', 'Sit reiciendis nemo', 'Laboris necessitatib', 'Fugiat ut facilis a', 2, '2025-12-25 21:23:37'),
+(15, 2, 'Laudantium molestia', 'Ullamco quisquam lau', 'Libero elit sapient', 'Quia iure aut repreh', 'Voluptatem suscipit', 1, '2025-12-25 22:55:13'),
+(16, 4, 'Quaerat cumque ex qu', 'Aut quis perferendis', 'Adipisicing nesciunt', 'Rerum repudiandae hi', 'Qui rem accusamus es', 3, '2025-12-26 23:42:36'),
+(17, 4, 'Dolorum officia vero', 'Mollit pariatur Qua', 'Illo consequatur An', 'Culpa et ipsam minim', 'Expedita rem nulla i', 1, '2025-12-26 23:42:36'),
+(18, 2, 'Reprehenderit minim', 'Rerum rerum Nam cons', 'Autem temporibus min', 'Iste beatae consequa', 'Culpa incidunt fuga', 3, '2025-12-28 21:36:04');
 
--- Créer des résultats de test pour l'étudiant
-INSERT INTO results (quiz_id, etudiant_id, score, total_questions) VALUES 
-(1, 2, 2, 3),
-(1, 2, 3, 3);
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `quiz`
+--
+
+CREATE TABLE `quiz` (
+  `id` int NOT NULL,
+  `titre` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `categorie_id` int NOT NULL,
+  `enseignant_id` int NOT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `quiz`
+--
+
+INSERT INTO `quiz` (`id`, `titre`, `description`, `categorie_id`, `enseignant_id`, `is_active`, `created_at`, `updated_at`) VALUES
+(2, 'Porro ab autem molli', 'Sunt ut earum odit q', 3, 1, 1, '2025-12-25 20:22:30', '2025-12-29 08:31:06'),
+(3, 'Non laboris ut eos s', 'Vel non rerum placea', 4, 2, 1, '2025-12-25 21:23:37', '2025-12-25 21:23:37'),
+(4, 'Vitae velit id est e', 'Suscipit aperiam rer', 5, 3, 1, '2025-12-26 23:42:36', '2025-12-26 23:42:36');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `results`
+--
+
+CREATE TABLE `results` (
+  `id` int NOT NULL,
+  `quiz_id` int NOT NULL,
+  `etudiant_id` int NOT NULL,
+  `score` int NOT NULL,
+  `total_questions` int NOT NULL,
+  `completed_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `results`
+--
+
+INSERT INTO `results` (`id`, `quiz_id`, `etudiant_id`, `score`, `total_questions`, `completed_at`, `created_at`) VALUES
+(1, 3, 1, 23, 3, '2025-12-25 21:56:15', '2025-12-25 21:57:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int NOT NULL,
+  `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('enseignant','etudiant') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `nom`, `email`, `password_hash`, `role`, `created_at`, `deleted_at`) VALUES
+(1, 'Sint cumque ea corpo', 'wukabe@mailinator.com', '$2y$10$.H3xaFVs/SCpXCl3PS8B..24BFwC6hfDEM46J.W.msWtNpgLt8Kn2', 'enseignant', '2025-12-25 20:03:15', NULL),
+(2, 'Assumenda laboriosam', 'cijevog@mailinator.com', '$2y$10$Jy4hDlKEc2yK8vST1Sidw.rMvlp66WiLwMNIrcN4oZbilMqI1J3DC', 'etudiant', '2025-12-25 21:22:26', NULL),
+(3, 'Dolores sit aute fug', 'tucevekabi@mailinator.com', '$2y$10$aBl3TEHjxAPhpBOL6ALu9O/aEaHg9s/ffUpCDygIi74OoJk91p6x6', 'enseignant', '2025-12-26 23:41:02', NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_created_by` (`created_by`);
+
+--
+-- Indexes for table `questions`
+--
+ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_quiz` (`quiz_id`);
+
+--
+-- Indexes for table `quiz`
+--
+ALTER TABLE `quiz`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_categorie` (`categorie_id`),
+  ADD KEY `idx_enseignant` (`enseignant_id`);
+
+--
+-- Indexes for table `results`
+--
+ALTER TABLE `results`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_quiz` (`quiz_id`),
+  ADD KEY `idx_etudiant` (`etudiant_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_role` (`role`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `questions`
+--
+ALTER TABLE `questions`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `quiz`
+--
+ALTER TABLE `quiz`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `results`
+--
+ALTER TABLE `results`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `categories`
+--
+ALTER TABLE `categories`
+  ADD CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `questions`
+--
+ALTER TABLE `questions`
+  ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `quiz`
+--
+ALTER TABLE `quiz`
+  ADD CONSTRAINT `quiz_ibfk_1` FOREIGN KEY (`categorie_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `quiz_ibfk_2` FOREIGN KEY (`enseignant_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `results`
+--
+ALTER TABLE `results`
+  ADD CONSTRAINT `results_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `results_ibfk_2` FOREIGN KEY (`etudiant_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT ;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS ;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION ;
+*/
+
+SELECT * FROM users;
+SELECT * FROM categories;
+SELECT * FROM quiz;
+SELECT * FROM questions;
+SELECT * FROM results;
+/*
+#SELECT c.nom, COUNT(q.is_active = 1) AS total FROM categories c LEFT JOIN quiz q ON c.created_by = q.enseignant_id;
+SELECT 
+    c.nom, 
+    COUNT(CASE WHEN q.is_active = 1 THEN 1 END) AS total_actifs
+FROM categories c 
+LEFT JOIN quiz q ON c.id = q.categorie_id
+GROUP BY c.id, c.nom;
+
+SELECT q.id,
+		q.titre,
+		q.description,
+		 c.nom,
+		 COUNT(ques.id) AS Question_count
+		  FROM quiz q 
+		  JOIN categories c ON q.categorie_id = c.id 
+		  LEFT JOIN questions ques ON ques.quiz_id = q.id
+		  WHERE q.categorie_id = 10 AND q.is_active = 1 
+		  GROUP BY q.id, q.titre, q.description, c.nom;
+
+SELECT ques.id,ques.question,ques.correct_option,ques.option1,ques.option2,
+			ques.option3,ques.option4, q.titre, COUNT(ques.quiz_id) 
+			FROM questions ques JOIN quiz q 
+			ON ques.quiz_id = q.id
+			WHERE ques.quiz_id = 2
+			GROUP BY ques.id,ques.question,ques.correct_option,ques.option1,ques.option2,
+			ques.option3,ques.option4, q.titre;
+*/
+#INSERT INTO results(quiz_id,etudiant_id,score,total_questions) VALUES(3,5,50,2);
+#SELECT * FROM results WHERE etudiant_id = 5 AND quiz_id = 3;
+SELECT COUNT(*) AS Attempt FROM results WHERE etudiant_id = 5 AND quiz_id = 3;
+SELECT  COUNT(ques.id) AS TotalQuestions
+			FROM questions ques JOIN quiz q 
+			ON ques.quiz_id = q.id;

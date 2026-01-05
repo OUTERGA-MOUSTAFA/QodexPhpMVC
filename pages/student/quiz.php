@@ -11,6 +11,8 @@ require_once '../../classes/Results_Student.php';
 
 // Vérifier que l'utilisateur est role= "etudiant", id_user, name_user
 Security::requireStudent();
+security::generateCSRFToken();
+Security::againstHijacking();
 
 // unset($_SESSION['quiz_success'], $_SESSION['quiz_error']);
 
@@ -52,6 +54,7 @@ foreach($quizzes as $quizItem) {
     $hasTakenQuiz = $results->isPassQuiz($quizItem['id'], $studentId);
     $completedQuizzes[$quizItem['id']] = $hasTakenQuiz;
 }
+
 ?>
 <?php include '../partials/header.php'; ?>
 <?php include '../partials/nav_student.php'; ?>
@@ -150,10 +153,9 @@ foreach($quizzes as $quizItem) {
                             <!-- else to questions page-->
                             <?php else: ?>
                                 <form action="<?= htmlspecialchars('Questions.php')?>" method="post">
-                                    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken()?>">
+                                    <input type="hidden" name="quiz_id" value="<?= htmlspecialchars((int)$quizItem['id'])?>">
 
-                                    <input type="hidden" name="quiz_id" value="<?= htmlspecialchars($quizItem['id'])?>">
-                                    
                                     <button type='submit' name="go"  class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                                         <i class="fas fa-play mr-2"></i> Commencer le Quiz
                                     </button>

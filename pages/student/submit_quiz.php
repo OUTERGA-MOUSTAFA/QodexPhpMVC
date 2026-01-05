@@ -32,11 +32,11 @@ $userAnswers = json_decode($data['answers'], true);
 $totalQuestions = (int)$data['total_questions'];
 
 try {
-    // جلب الأسئلة الصحيحة من قاعدة البيانات
+    //
     $questions = new Question_Student();
     $allQuestions = $questions->getQuestion($quizId);
     
-    // حساب النتيجة
+    // calcule
     $correctAnswers = 0;
     
     foreach ($allQuestions as $question) {
@@ -46,17 +46,17 @@ try {
         if (isset($userAnswers[$questionId])) {
             $userAnswer = $userAnswers[$questionId];
             
-            // مقارنة الإجابة مع الإجابة الصحيحة
+            // check answer
             if ($userAnswer === $question['correct_option']) {
                 $correctAnswers++;
             }
         }
     }
     
-    // حساب النسبة المئوية
+    // calc score
     $score = ($correctAnswers / $totalQuestions) * 100;
     
-    // هنا يمكنك حفظ النتيجة في قاعدة البيانات إذا أردت
+    // save data on database
     // $quizStudent = new Quiz_Student();
     // $quizStudent->saveResult($_SESSION['user_id'], $quizId, $score, $correctAnswers, $totalQuestions);
     

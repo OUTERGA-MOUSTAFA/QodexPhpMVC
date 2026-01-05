@@ -1,4 +1,25 @@
 
+<?php
+// result.php
+require_once '../../config/database.php';
+require_once '../../classes/Database.php';
+require_once '../../classes/Security.php';
+require_once '../../classes/Attempt_Student.php';
+
+Security::requireStudent();
+Security::againstHijacking();
+// Récupérer les paramètres
+$quizId = isset($_GET['quiz_id']) ? (int)$_GET['quiz_id'] : 0;
+$score = isset($_GET['score']) ? (int)$_GET['score'] : 0;
+$total = isset($_GET['total']) ? (int)$_GET['total'] : 100;
+
+// Calculer le pourcentage
+$percentage = $total > 0 ? round(($score / $total) * 100, 2) : 0;
+
+// Déterminer si l'utilisateur a réussi
+$passingScore = 60; // À récupérer de la base de données
+$hasPassed = $percentage >= $passingScore;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

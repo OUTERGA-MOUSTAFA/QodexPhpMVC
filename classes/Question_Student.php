@@ -11,7 +11,12 @@ class Question_Student {
     public function __construct() {
         $this->pdo = Database::getInstance();
     }
-    public function getQuestion($idQuiz){
+   $idQuiz = filter_var($data['question_id'], FILTER_VALIDATE_INT);
+   if (!$idQuiz) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid Quiz_id']);
+    exit;
+    }
         $sql = "SELECT ques.id,ques.question,ques.option1,ques.option2,
 			ques.option3,ques.option4, q.titre 
 			FROM questions ques JOIN quiz q 
@@ -20,8 +25,11 @@ class Question_Student {
 			GROUP BY ques.id,ques.question,ques.option1,ques.option2,
 			ques.option3,ques.option4, q.titre";
         $result = $this->pdo->query($sql,[$idQuiz]);
-        return $result->fetchAll();
-    }
+         
+    
+    echo json_encode([
+        'Questions' => $result->fetchAll();
+    ]);
 
     public function getCountQuestionsThisQuiz($idQuiz){
         $sql = "SELECT  COUNT(ques.id) AS TotalQuestions
@@ -35,7 +43,7 @@ class Question_Student {
 
     // getAllIdQuis
     public function getById($id) {
-        $sql = "SELECT id FROM quiz WHERE id = ?";
+        $sql = "SELECT id, titre FROM quiz WHERE id = ?";
         $result = $this->pdo->query($sql, [$id]);
         return $result->fetch()['TotalQuestions'];
     }
